@@ -45,7 +45,8 @@ export const Config = z.object({
      infer_ticket: z.boolean().default(true),
      confirm_ticket: z.boolean().default(true),
      add_to_title: z.boolean().default(true),
-     append_hashtag: z.boolean().default(false)
+     append_hashtag: z.boolean().default(false),
+     prefix: z.string().default('')
    }).default({}),
    commit_title: z.object({
      max_size: z.number().positive().default(70)

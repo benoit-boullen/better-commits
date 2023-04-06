@@ -8,7 +8,7 @@ export const CONFIG_FILE_NAME = '.better-commits.json'
 export const SPACE_TO_SELECT = `${color.dim('(<space> to select)')}`
 export const OPTIONAL_PROMPT =  `${color.dim('(optional)')}`
 export const REGEX_SLASH_TAG = new RegExp(/\/(\w+-\d+)/)
-export const REGEX_START_TAG = new RegExp(/^(\w+-\d+)/)
+export const REGEX_START_TAG = new RegExp(/^(\w+)-/)
 export const REGEX_SLASH_NUM = new RegExp(/\/(\d+)/)
 export const REGEX_START_NUM = new RegExp(/^(\d+)/)
 export const DEFAULT_TYPE_OPTIONS = [
@@ -83,4 +83,8 @@ export function clean_commit_title(title: string): string {
     return title_trimmed.substring(0, title_trimmed.length - 1).trim();
   } 
   return title.trim()
+}
+
+export function ucFirst(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }

@@ -8,7 +8,25 @@ import { execSync } from 'child_process';
 import { z } from "zod";
 import { fromZodError } from 'zod-validation-error';
 import { CommitState, Config } from './zod-state';
-import { CONFIG_FILE_NAME, get_default_config_path, check_missing_stage, addNewLine, SPACE_TO_SELECT, REGEX_SLASH_TAG, REGEX_SLASH_NUM, REGEX_START_TAG, REGEX_START_NUM, OPTIONAL_PROMPT, clean_commit_title, COMMIT_FOOTER_OPTIONS, infer_type_from_branch, Z_FOOTER_OPTIONS, CUSTOM_SCOPE_KEY,  get_git_root } from './utils';
+import {
+  CONFIG_FILE_NAME,
+  get_default_config_path,
+  check_missing_stage,
+  addNewLine,
+  SPACE_TO_SELECT,
+  REGEX_SLASH_TAG,
+  REGEX_SLASH_NUM,
+  REGEX_START_TAG,
+  REGEX_START_NUM,
+  OPTIONAL_PROMPT,
+  clean_commit_title,
+  COMMIT_FOOTER_OPTIONS,
+  infer_type_from_branch,
+  Z_FOOTER_OPTIONS,
+  CUSTOM_SCOPE_KEY,
+  get_git_root,
+  ucFirst
+} from './utils';
 
 main(load_setup());
 
@@ -126,11 +144,16 @@ async function main(config: z.infer<typeof Config>) {
   if (config.check_ticket.infer_ticket) {
     try {
       const branch = execSync('git branch --show-current', {stdio : 'pipe' }).toString();
-      const found: string[] = [branch.match(REGEX_SLASH_TAG), branch.match(REGEX_SLASH_NUM) , branch.match(REGEX_START_TAG), branch.match(REGEX_START_NUM)]
-      .filter(v => v != null)
-      .map(v => v && v.length >= 2 ?  v[1] : '')
-      if (found.length && found[0]) {
-        commit_state.ticket = config.check_ticket.append_hashtag ? '#' + found[0] : found[0]
+      const word: string[] = branch.match(REGEX_START_TAG);
+
+      if (word !== null) {
+        commit_state.ticket = ucFirst(word[1]);
+      }
+
+      const number: string[] = branch.match(REGEX_START_NUM);
+      if (number !== null) {
+        const ticketNumber = config.check_ticket.append_hashtag ? '#' + number[0] : number[0];
+        commit_state.ticket = config.check_ticket.prefix + ticketNumber;
       }
     } catch(err: any) {
       // Can't find branch, fail silently
@@ -259,9 +282,18 @@ async function main(config: z.infer<typeof Config>) {
 
 function build_commit_string(commit_state: z.infer<typeof CommitState>, config: z.infer<typeof Config>, colorize: boolean = false): string {
   let commit_string = '';
+
+  if (commit_state.ticket) {
+    commit_string += colorize ? color.magenta(commit_state.ticket) : commit_state.ticket
+
+    commit_string += ' - '
+  }
+
+
   if (commit_state.type) {
     commit_string += colorize ? color.blue(commit_state.type) : commit_state.type
-  } 
+  }
+
 
   if (commit_state.scope) {
     const scope = colorize ? color.cyan(commit_state.scope) : commit_state.scope;
@@ -276,9 +308,6 @@ function build_commit_string(commit_state: z.infer<typeof CommitState>, config: 
      commit_string += ': '
   }
 
-  if (commit_state.ticket) {
-     commit_string += colorize ? color.magenta(commit_state.ticket) + ' ' : commit_state.ticket + ' '
-  }
 
   if (commit_state.title) {
     commit_string += colorize ? color.reset(commit_state.title) : commit_state.title;
