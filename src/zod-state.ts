@@ -20,7 +20,7 @@ export const Config = z.object({
    commit_scope: z.object({
      enable: z.boolean().default(true),
      custom_scope: z.boolean().default(false),
-     initial_value: z.string().default('app'),
+     initial_value: z.string().default('custom'),
      options: z.array(z.object({
       value: z.string(),
       label: z.string().optional(),
@@ -45,8 +45,8 @@ export const Config = z.object({
      infer_ticket: z.boolean().default(true),
      confirm_ticket: z.boolean().default(true),
      add_to_title: z.boolean().default(true),
-     append_hashtag: z.boolean().default(false),
-     prefix: z.string().default('')
+     append_hashtag: z.boolean().default(true),
+     prefix: z.string().default('Refs ')
    }).default({}),
    commit_title: z.object({
      max_size: z.number().positive().default(70)
@@ -56,7 +56,7 @@ export const Config = z.object({
      required: z.boolean().default(false),
    }).default({}),
    commit_footer:  z.object({
-     enable: z.boolean().default(true),
+     enable: z.boolean().default(false),
      initial_value: z.array(Z_FOOTER_OPTIONS).default([]),
      options: z.array(Z_FOOTER_OPTIONS).default(FOOTER_OPTION_VALUES),
    }).default({}),

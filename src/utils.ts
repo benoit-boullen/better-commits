@@ -25,10 +25,11 @@ export const DEFAULT_TYPE_OPTIONS = [
 ]
 export const DEFAULT_SCOPE_OPTIONS = [
     { value: 'app', label: 'app' },
-    { value: 'shared', label: 'shared' },
+    { value: 'api', label: 'api' },
+    { value: 'test', label: 'test' },
     { value: 'server', label: 'server' },
     { value: 'tools', label: 'tools' },
-    { value: '', label: 'none'},
+    { value: 'custom', label: 'custom', hint: 'Add a custom scope'},
 ]
 export const COMMIT_FOOTER_OPTIONS = [
   { value: 'closes', label: 'closes <issue/ticket>', hint: 'Attempts to infer ticket from branch'},
