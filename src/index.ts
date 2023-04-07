@@ -27,6 +27,7 @@ import {
   get_git_root,
   ucFirst
 } from './utils';
+import { parseArgs } from 'util';
 
 main(load_setup());
 
@@ -174,6 +175,7 @@ async function main(config: z.infer<typeof Config>) {
       {
 					message: 'Write a brief title describing the commit',
 					placeholder: '',
+          initialValue: parseArgs({allowPositionals: true})?.positionals[0],
 					validate: (value) => {
 						if (!value) return 'Please enter a title';
             const commit_scope_size = commit_state.scope ? commit_state.scope.length + 2 : 0
